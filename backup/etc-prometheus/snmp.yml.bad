@@ -1,0 +1,13 @@
+# Due to licensing reasons, it is not possible to ship a ready-to-use snmp.yml
+# config file.
+#
+# See /usr/share/doc/prometheus-snmp-exporter/README.Debian for instructions
+# on using prometheus-snmp-generator to create a suitable snmp.yml config.
+modules:
+  interfaces:
+    walk:
+      - 1.3.6.1.2.1.2
+      - 1.3.6.1.2.1.31.1.1
+    version: 2
+    auth:
+      community: public

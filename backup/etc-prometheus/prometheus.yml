@@ -1,0 +1,66 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+          - "localhost:9090"
+
+  - job_name: "pushgateway"
+    honor_labels: true
+    static_configs:
+      - targets:
+          - "localhost:9091"
+
+  - job_name: "Router"
+    metrics_path: /snmp
+    params:
+      module: [mikrotik]
+    static_configs:
+      - targets:
+          - 10.5.30.1
+          - 10.5.200.25
+          - 10.5.100.3
+          - 10.5.200.30
+          - 10.5.200.31
+          - 10.5.90.1
+          - 10.5.99.2
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116
+
+  - job_name: "olt"
+    metrics_path: /snmp
+    params:
+      module: [olt_generic]
+    static_configs:
+      - targets:
+          - 10.5.10.2
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116
+
+  - job_name: "proxmox"
+    static_configs:
+      - targets:
+          - 10.5.30.2:9100
+        labels:
+          server: proxmox
+
+  - job_name: "armbian"
+    static_configs:
+      - targets:
+          - 10.5.90.2:9100
+        labels:
+          server: armbian
